@@ -1,9 +1,12 @@
 package com.galvanize.springcrudpractice;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="users")
+@JsonIgnoreProperties("password")
 public class User {
 
     @Id
@@ -41,6 +44,6 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("User[password=%s, email='%s']", password, email);
+        return String.format("User[id=%d, email='%s']", id, email);
     }
 }

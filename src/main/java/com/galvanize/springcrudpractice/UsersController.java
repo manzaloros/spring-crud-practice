@@ -21,6 +21,8 @@ public class UsersController {
 
     @PostMapping("")
     public User createUser(@RequestBody User user) {
-        return this.repository.save(user);
+        User userReturned = this.repository.save(user);
+        System.out.println(userReturned);
+        return userReturned;
     }
 }

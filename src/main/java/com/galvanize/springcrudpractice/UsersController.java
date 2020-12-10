@@ -20,13 +20,19 @@ public class UsersController {
         return (List<User>) this.repository.findAll();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Optional<User> getUserById(@PathVariable Long id) {
         return this.repository.findById(id);
     }
 
     @PostMapping("")
     public User createUser(@RequestBody User user) {
+        return this.repository.save(user);
+    }
+
+    @PatchMapping("/{id}")
+    public User updateUser(@RequestBody User user, @PathVariable Long id) {
+        user.setId(id);
         return this.repository.save(user);
     }
 }

@@ -63,6 +63,25 @@ class SpringCrudPracticeApplicationTests {
 
 		this.mvc.perform(request)
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", instanceOf(Number.class)));
+				.andExpect(jsonPath("$.id",
+						instanceOf(Number.class)));
+	}
+
+	@Test
+	@Transactional
+	@Rollback
+	public void testGetById() throws Exception {
+
+		User user = new User();
+		user.setEmail("test_email@fagetaboutit.com");
+		repository.save(user);
+
+		MockHttpServletRequestBuilder request = get("/users/1")
+				.contentType(MediaType.APPLICATION_JSON);
+
+		this.mvc.perform(request)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id",
+						equalTo(user.getId().intValue()) ));
 	}
 }

@@ -3,6 +3,7 @@ package com.galvanize.springcrudpractice;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -17,6 +18,11 @@ public class UsersController {
     @GetMapping("")
     public List<User> getUsers() {
         return (List<User>) this.repository.findAll();
+    }
+
+    @GetMapping("{id}")
+    public Optional<User> getUserById(@PathVariable Long id) {
+        return this.repository.findById(id);
     }
 
     @PostMapping("")

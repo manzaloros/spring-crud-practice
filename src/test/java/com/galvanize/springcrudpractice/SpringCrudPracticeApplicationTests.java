@@ -57,8 +57,6 @@ class SpringCrudPracticeApplicationTests {
 				new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = ow.writeValueAsString(user);
 
-		System.out.println("JSON output" + json);
-
 		MockHttpServletRequestBuilder request = post("/users")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json);

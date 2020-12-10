@@ -1,18 +1,19 @@
 package com.galvanize.springcrudpractice;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="users")
-@JsonIgnoreProperties("password")
+@JsonIgnoreProperties(value={ "password" }, allowSetters = true)
 public class User {
 
     @Id
     @GeneratedValue
     private Long id;
-
 
     private String email;
 

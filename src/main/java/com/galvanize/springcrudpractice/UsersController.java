@@ -2,7 +2,9 @@ package com.galvanize.springcrudpractice;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,5 +36,11 @@ public class UsersController {
     public User updateUser(@RequestBody User user, @PathVariable Long id) {
         user.setId(id);
         return this.repository.save(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public Map<String, Long> deleteUser(@PathVariable Long id) {
+        this.repository.deleteById(id);
+        return Collections.singletonMap("count", this.repository.count());
     }
 }

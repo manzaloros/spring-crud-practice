@@ -1,1 +1,1 @@
-# spring-crud-practice Adding lines for github push test
+# spring-crud-practice Adding line for github push test

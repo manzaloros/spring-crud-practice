@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -57,6 +56,7 @@ class SpringCrudPracticeApplicationTests {
 				new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = ow.writeValueAsString(user);
 
+
 		MockHttpServletRequestBuilder request = post("/users")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json);
@@ -71,7 +71,6 @@ class SpringCrudPracticeApplicationTests {
 	@Transactional
 	@Rollback
 	public void testGetById() throws Exception {
-
 		User user = new User();
 		user.setEmail("test_email@fagetaboutit.com");
 		repository.save(user);
@@ -83,5 +82,41 @@ class SpringCrudPracticeApplicationTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id",
 						equalTo(user.getId().intValue()) ));
+	}
+
+	@Test
+	@Transactional
+	@Rollback
+	public void testPatch() throws Exception {
+		User user = new User();
+		user.setEmail("test_email@thisNeedsToBePatched.com");
+		user.setPassword("this_is_a_password");
+
+		ObjectWriter ow =
+				new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String jsonBeforePatch = ow.writeValueAsString(user);
+
+		User userUpdated = new User();
+		user.setEmail("patchedEmail");
+		user.setPassword("this_is_a_password");
+
+		ObjectWriter updatedObject =
+				new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = updatedObject.writeValueAsString(userUpdated);
+
+
+		post("/users/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonBeforePatch);
+
+		MockHttpServletRequestBuilder request = patch("/users/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json);
+
+		this.mvc.perform(request)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.email",
+						equalTo(userUpdated.getEmail())));
+
 	}
 }

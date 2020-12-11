@@ -1,6 +1,5 @@
 package com.galvanize.springcrudpractice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -31,8 +30,7 @@ public class UsersController {
     }
 
     @PostMapping("/authenticate")
-    public HashMap authenticateUser(@RequestBody User user)
-            throws JsonProcessingException {
+    public HashMap authenticateUser(@RequestBody User user) {
         User registeredUser =
                 this.repository.findRegisteredUserByEmail(user.getEmail());
         HashMap response = new HashMap<>();

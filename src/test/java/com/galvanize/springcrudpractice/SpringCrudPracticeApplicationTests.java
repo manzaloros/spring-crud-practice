@@ -154,4 +154,29 @@ class SpringCrudPracticeApplicationTests {
 						equalTo(userUpdated.getEmail())));
 
 	}
+
+	@Test
+	@Transactional
+	@Rollback
+	public void testDelete() throws Exception {
+		User user = new User();
+		user.setEmail("test_email@thiswillhavepassword.com");
+		user.setPassword("this_is_a_password");
+
+		ObjectWriter ow =
+				new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = ow.writeValueAsString(user);
+
+
+		delete("/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json);
+
+		MockHttpServletRequestBuilder request = get("/users/1")
+				.contentType(MediaType.APPLICATION_JSON);
+
+		this.mvc.perform(request)
+				.andExpect(status().isOk())
+				.andExpect(content().string("null"));
+	}
 }

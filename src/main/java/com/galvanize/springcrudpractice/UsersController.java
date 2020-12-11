@@ -1,11 +1,9 @@
 package com.galvanize.springcrudpractice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -30,6 +28,24 @@ public class UsersController {
     @PostMapping("")
     public User createUser(@RequestBody User user) {
         return this.repository.save(user);
+    }
+
+    @PostMapping("/authenticate")
+    public HashMap authenticateUser(@RequestBody User user)
+            throws JsonProcessingException {
+        User registeredUser =
+                this.repository.findRegisteredUserByEmail(user.getEmail());
+        HashMap response = new HashMap<>();
+
+        if (Objects.isNull(registeredUser)
+                || !user.getPassword().equals(registeredUser.getPassword())) {
+            response.put("authenticated", false);
+        } else {
+            response.put("authenticated", true);
+            response.put("User", registeredUser);
+        }
+
+        return response;
     }
 
     @PatchMapping("/{id}")

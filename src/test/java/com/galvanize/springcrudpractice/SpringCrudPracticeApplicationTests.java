@@ -119,4 +119,39 @@ class SpringCrudPracticeApplicationTests {
 						equalTo(userUpdated.getEmail())));
 
 	}
+
+	@Test
+	@Transactional
+	@Rollback
+	public void testPatchWithoutPassword() throws Exception {
+		User user = new User();
+		user.setEmail("test_email@thisNeedsToBePatched.com");
+
+		ObjectWriter ow =
+				new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String jsonBeforePatch = ow.writeValueAsString(user);
+
+		User userUpdated = new User();
+		user.setEmail("patchedEmail");
+		user.setPassword("this_is_a_password");
+
+		ObjectWriter updatedObject =
+				new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = updatedObject.writeValueAsString(userUpdated);
+
+
+		post("/users/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonBeforePatch);
+
+		MockHttpServletRequestBuilder request = patch("/users/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json);
+
+		this.mvc.perform(request)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.email",
+						equalTo(userUpdated.getEmail())));
+
+	}
 }

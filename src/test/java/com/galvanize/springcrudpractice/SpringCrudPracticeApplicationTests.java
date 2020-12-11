@@ -179,4 +179,41 @@ class SpringCrudPracticeApplicationTests {
 				.andExpect(status().isOk())
 				.andExpect(content().string("null"));
 	}
+
+	@Test
+	@Transactional
+	@Rollback
+	public void testAuthentication() throws Exception {
+		User user = new User();
+		user.setEmail("test_email@thiswillhavepassword.com");
+		user.setPassword("this_is_a_password");
+
+		User userWrongPassword = new User();
+		user.setEmail("test_email@thiswillhavepassword.com");
+		user.setPassword("WRONG_PASSWORD");
+
+		ObjectWriter ow =
+				new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = ow.writeValueAsString(user);
+
+		ObjectWriter owWrongPassword =
+				new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String jsonWrongPassword =
+				owWrongPassword.writeValueAsString(userWrongPassword);
+
+
+		post("/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json);
+
+		MockHttpServletRequestBuilder request =
+				post("/users/authenticate")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonWrongPassword);
+
+		this.mvc.perform(request)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.authenticated",
+						equalTo(false)));
+	}
 }
